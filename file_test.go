@@ -1,34 +1,26 @@
 package main
 import (
-	"strings"
-	"bufio"
-	"fmt"
 	"os"
+	"fmt"
+	"bufio"
+	"strings"
+	"testing"
 )
 
-func parseFile(input_file *os.File, output_file *os.File) {
-	sc := bufio.NewScanner(input_file)
-	wr := bufio.NewWriter(output_file)
-	defer wr.Flush()
-	for f, tk := true, sc.Scan(); tk; f, tk = true, sc.Scan() {
+func openResultFile(fn *os.File) bool {
+	sc := bufio.NewScanner(fn)
+	for tk := sc.Scan(); tk; tk = sc.Scan() {
 		for _, v := range strings.Fields(sc.Text()) {
-			switch v {
+			switch v{
 			case "error":
-				f = false
-				break
-			}
-		}
-		if f {
-			_, err := wr.Write(sc.Bytes())
-			if err != nil {
-				fmt.Println(err)
-				return
+				return false
 			}
 		}
 	}
+	return true
 }
 
-func main() {
+func TestFile(t *testing.T) {
 	input_file, err := os.OpenFile("input.txt", os.O_RDONLY, 0111)
 	if err != nil {
 		fmt.Println(err)
@@ -42,4 +34,7 @@ func main() {
 	defer input_file.Close()
 	defer output_file.Close()
 	parseFile(input_file, output_file)
+	if !openResultFile(output_file) {
+		t.Errorf("`output.txt` has `error` word in it!")
+	}
 }
