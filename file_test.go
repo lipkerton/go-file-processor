@@ -33,6 +33,8 @@ func readEqual(ifl *os.File, ofl *os.File) bool {
 			switch v {
 			case "error":
 				flag = false
+			}
+			if !flag {
 				break
 			}
 		}
@@ -98,7 +100,7 @@ func TestStringsIncomparable(t *testing.T) {
 	defer input_file.Close()
 	defer output_file.Close()
 	parseFile(input_file, output_file)
-	if !readEmpty(output_file) {
+	if !readEqual(input_file, output_file) {
 		t.Errorf("strings in files are incomparable")
 	}
 }

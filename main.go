@@ -15,6 +15,8 @@ func parseFile(input_file *os.File, output_file *os.File) {
 			switch v {
 			case "error":
 				f = false
+			}
+			if !f {
 				break
 			}
 		}
